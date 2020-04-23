@@ -1,11 +1,19 @@
 <?php
-require "../includes/dbh.inc.php"; //connectiont to database. It contains $conn
+$servername = "localhost";
+$dbUsername = "root";
+$dbPassword = "root";
+$dbName = "JNTUH";
+
+$conn = mysqli_connect($servername, $dbUsername, $dbPassword, $dbName);
+if(!$conn){
+    die("connection failed".mysqli_connect_error());
+}
 $sql='';
 $isAsc = isset($_GET['order'])? (bool) $_GET['order']: 1;
 if (isset($_GET['sort'])) {
-    $sql = "select * from results_32 order by -`".$_GET['sort']."` ".($isAsc?'ASC':'DESC')." ;";
+    $sql = "select * from results_31 order by -`".$_GET['sort']."` ".($isAsc?'ASC':'DESC')." ;";
 } else{
-    $sql = "select * from results_32 order by rollno";
+    $sql = "select * from results_31 order by rollno";
 }
 $result = mysqli_query($conn, $sql);
 mysqli_close($conn);
@@ -73,8 +81,6 @@ mysqli_close($conn);
         echo "0 results";
     }
     ?>
-    <!--    <br><br>-->
-    <!--    <p>Add someone</p>-->
 </table>
 </body>
 </html>
