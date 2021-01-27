@@ -23,8 +23,7 @@ for rollno in rollnos:
         soup = BeautifulSoup(r.text, "html.parser")
         tables = soup.findAll("table")
 
-        rollno = tables[0].find("tr").findAll("td")[1].find("b").contents[0]
-        name = tables[0].find("tr").findAll("td")[3].find("b").contents[0]
+        name = str(tables[0].find("tr").findAll("td")[3].find("b").contents[0]).encode('utf-8')
         rows = tables[1].findAll("tr")[1:]
 
         grade_dict = {"O":10, "A+":9, "A":8, "B+":7, "B":6, "C":5}
@@ -35,7 +34,7 @@ for rollno in rollnos:
         credit_sum = 24
         for row in rows:
             columns = row.findAll('td')
-            d[columns[0].find("b").contents[0]] = columns[2].find("b").contents[0]
+            d[columns[0].find("b").contents[0]] = str(columns[2].find("b").contents[0]).encode('utf-8')
             if columns[2].find("b").contents[0] == "F" or columns[2].find("b").contents[0] == "Ab":
                 grade='null'
                 flag=1
