@@ -1,8 +1,8 @@
 <?php
-$servername = "sql6.freemysqlhosting.net";
-$dbUsername = "sql6403319";
-$dbPassword = "jkb1mBQnaG";
-$dbName = "sql6403319";
+$servername = "localhost";
+$dbUsername = "root";
+$dbPassword = "root";
+$dbName = "JNTUH";
 
 $conn = mysqli_connect($servername, $dbUsername, $dbPassword, $dbName);
 if (!$conn) {
@@ -17,9 +17,9 @@ $exam_code = mysqli_real_escape_string($conn, $_GET['examcode']);
 $sql = '';
 $isAsc = isset($_GET['order']) ? (bool) $_GET['order'] : 1;
 if (isset($_GET['sort'])) {
-    $sql = "select * from " . $exam_code . " order by -`" . mysqli_real_escape_string($conn, $_GET['sort']) . "` " . ($isAsc ? 'ASC' : 'DESC') . " ;";
+    $sql = "select * from `" . $exam_code . "` order by -`" . mysqli_real_escape_string($conn, $_GET['sort']) . "` " . ($isAsc ? 'ASC' : 'DESC') . " ;";
 } else {
-    $sql = "select * from " . $exam_code . " order by rollno";
+    $sql = "select * from `" . $exam_code . "` order by rollno;";
 }
 
 $exam_result = mysqli_query($conn, $sql);
@@ -28,7 +28,6 @@ if (mysqli_num_rows($exam_result) <= 0) {
 }
 
 $subjects_result = mysqli_query($conn, "select * from `subject_names` where `exam_code`='" . $exam_code . "';");
-mysqli_close($conn);
 ?>
 <!doctype html>
 <html lang="en">
@@ -66,14 +65,14 @@ mysqli_close($conn);
 <body>
 <table>
     <tr>
-        <th class="more-space"><a href='display_results.php?examcode=<?php echo $exam_code; ?>&sort=rollno&order=<?php echo $isAsc ?>'>Rollno</a></th>
-        <th class="more-space"><a href='display_results.php?examcode=<?php echo $exam_code; ?>&sort=name&order=<?php echo $isAsc ?>'>Name</a></th>
+        <th class="more-space"><a href='display_results.php?examcode=<?php echo $exam_code; ?>&sort=rollno&order=<?php echo !$isAsc ?>'>Rollno</a></th>
+        <th class="more-space"><a href='display_results.php?examcode=<?php echo $exam_code; ?>&sort=name&order=<?php echo !$isAsc ?>'>Name</a></th>
         <?php
-        while ($row = mysqli_fetch_assoc($exam_result)) {
-            echo "<th><a href='display_results.php?examcode=" . $exam_code . "&sort=" . $row['subject_code'] . "&order=" . $isAsc . "'>" . mysqli_fetch_row($subjects_result)[3] . "</a></th>";
+        while ($row = mysqli_fetch_assoc($subjects_result)) {
+            echo "<th><a href='display_results.php?examcode=" . $exam_code . "&sort=" . $row["subject_code"] . "&order=" . !$isAsc . "'>" . $row["subject_name"] . "</a></th>";
         }
         ?>
-        <th><a href='display_results.php?examcode=<?php echo $exam_code; ?>&sort=grade&order=<?php echo $isAsc ?>'>grade</a></th>
+        <th><a href='display_results.php?examcode=<?php echo $exam_code; ?>&sort=grade&order=<?php echo $isAsc == 1 ? 0:1 ?>'>grade</a></th>
     </tr>
     <?php
     while ($row = mysqli_fetch_assoc($exam_result)) {
@@ -83,6 +82,7 @@ mysqli_close($conn);
         }
         echo "</tr>";
     }
+    mysqli_close($conn);
     ?>
 </table>
 </body>
